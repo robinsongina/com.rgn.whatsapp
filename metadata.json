@@ -1,0 +1,23 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Rgn"
+            }
+        ],
+        "Category": "Online Services",
+        "Description": "Whatsapp plasmoid for Plasma.",
+        "Icon": "search-symbolic",
+        "Id": "com.rgn.whatsapp",
+        "License": "BSD 3.0",
+        "Name": "Whatsapp Plasmoid",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "0.1",
+        "Website": "https://web.whatsapp.com"
+    },
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-StandAloneApp": true
+}
