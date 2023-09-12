@@ -192,180 +192,33 @@ Item {
 		RowLayout {
 			Layout.fillHeight:true
 			Layout.fillWidth:true
-			WebEngineView {
+			
+			WhatsappEngineView {
 				id: whatsappWebview
-				url:"https://web.whatsapp.com"
-				focus: true
-				settings.javascriptCanAccessClipboard: plasmoid.configuration.allowClipboardAccess
-				Layout.fillHeight:true
-				Layout.fillWidth:true
-
-				profile: WebEngineProfile {
-					id: whatsappProfile
-					storageName: "whatsapp"
-					offTheRecord: false
-					httpUserAgent: plasmoid.configuration.userAgent
-					httpCacheType: WebEngineProfile.DiskHttpCache
-					persistentCookiesPolicy: WebEngineProfile.ForcePersistentCookies
-					userScripts: [
-						WebEngineScript {
-							injectionPoint: WebEngineScript.DocumentCreation
-							name: "helperFunctions"
-							worldId: WebEngineScript.MainWorld
-							sourceUrl: "./js/helper_functions.js"
-						}
-					]
-
-					//This signal is emitted whenever there is a newly created user notification. The notification argument holds the WebEngineNotification instance to query data and interact with.
-					onPresentNotification: {
-						if (!plasmoid.expanded) root.newMessage = true;
-						let notify = notificationComponent.createObject(parent);
-						notify.title = notification.title;
-						notify.text = notification.message
-						notify.sendEvent();
-					}
-				}
-
-				//This signal is emitted when the web site identified by securityOrigin requests to make use of the resource or device identified by feature.
-				onFeaturePermissionRequested: {
-					if (feature === WebEngineView.Notifications) {
-						whatsappWebview.grantFeaturePermission(securityOrigin, feature, true)
-					}
-				}
-
-				//This signal is emitted when request is issued to load a page in a separate web engine view. 
-				onNewViewRequested: {
-					Qt.openUrlExternally(request.requestedUrl)
-				}
-
-				//This signal is emitted when a page load begins, ends, or fails.
-				onLoadingChanged:  {
-					if(WebEngineView.LoadSucceededStatus === loadRequest.status) {
-						whatsappWebview.grantFeaturePermission("https://web.whatsapp.com", WebEngineView.Notifications, true)
-						whatsappWebview.runJavaScript("document.userScripts.setConfig("+JSON.stringify(plasmoid.configuration)+");");
-						if (plasmoid.configuration.matchTheme) {						
-							root.osTheme = (isDark(theme.backgroundColor) ? 'dark' : 'light');
-							whatsappWebview.runJavaScript("document.userScripts.getTheme();",function(theme) {
-								if(theme !== root.osTheme) whatsappWebview.runJavaScript("document.userScripts.setTheme('"+root.osTheme+"');");
-							});
-						}
-					}
-				}
-
-				//This signal is emitted when a JavaScript program tries to print a message to the web browser's console.
-				onJavaScriptConsoleMessage : if (Qt.application.arguments[0] == "plasmoidviewer") {
-					console.log("Whatsapp: " + message);
-				}
-
-				// onNavigationRequested : if(request.navigationType == WebEngineNavigationRequest.LinkClickedNavigation){
-				// 	console.log("estando navegando a otra pagina")
-				// 	if(request.url.toString().match(/https?\:\/\/whatsapp\.com/)) {
-				// 		console.log("Es de whats");
-				// 		whatsappWebview.url = request.url;
-				// 	} else {
-				// 		console.log("No es de Whatsapp");
-				// 		Qt.openUrlExternally(request.url);
-				// 		request.action = WebEngineNavigationRequest.IgnoreRequest;
-				// 	}
-				// } else {
-				// 	console.log(request.url)
-				// }
-
-				function isDark(color) {
-					let luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
-					return (luminance < 0.5);
-				}
+				profile.storageName: "whatsapp"
+				msgDebug: "Whatsapp: "
 			}
-			WebEngineView {
+
+			WhatsappEngineView {
 				id: whatsappWebviewDual
-				url: "https://web.whatsapp.com"
+				profile.storageName: "whatsappDual"
 				enabled: plasmoid.configuration.dualWhatsapp
 				visible: plasmoid.configuration.dualWhatsapp
-				settings.javascriptCanAccessClipboard: plasmoid.configuration.allowClipboardAccess
-				Layout.fillHeight: true
-				Layout.fillWidth: true
-
-				profile: WebEngineProfile {
-					id: whatsappProfileDual
-					storageName: "whatsappDual"
-					offTheRecord: false
-					httpUserAgent: plasmoid.configuration.userAgent
-					httpCacheType: WebEngineProfile.DiskHttpCache
-					persistentCookiesPolicy: WebEngineProfile.ForcePersistentCookies
-					userScripts: [
-						WebEngineScript {
-							injectionPoint: WebEngineScript.DocumentCreation
-							name: "helperFunctions"
-							worldId: WebEngineScript.MainWorld
-							sourceUrl: "./js/helper_functions.js"
-						}
-					]
-
-					//This signal is emitted whenever there is a newly created user notification. The notification argument holds the WebEngineNotification instance to query data and interact with.
-					onPresentNotification: {
-						if (!plasmoid.expanded) root.newMessage = true;
-						let notify = notificationComponent.createObject(parent);
-						notify.title = notification.title;
-						notify.text = notification.message
-						notify.sendEvent();
-					}
-				}
-
-				onFeaturePermissionRequested: {
-					if (feature === WebEngineView.Notifications) {
-						whatsappWebviewDual.grantFeaturePermission(securityOrigin, feature, true)
-					}
-				}
-
-				onNewViewRequested: {
-					Qt.openUrlExternally(request.requestedUrl)
-				}
-
-				onLoadingChanged:  {
-					if(WebEngineView.LoadSucceededStatus === loadRequest.status) {
-						console.log("Cargando")
-						whatsappWebviewDual.grantFeaturePermission("https://web.whatsapp.com", WebEngineView.Notifications, true);
-						whatsappWebviewDual.runJavaScript("document.userScripts.setConfig("+JSON.stringify(plasmoid.configuration)+");");
-						
-						if (plasmoid.configuration.matchTheme) {
-							let themeLightness = (isDark(theme.backgroundColor) ? 'dark' : 'light');
-							whatsappWebviewDual.runJavaScript("document.userScripts.getTheme();",function(theme) {
-								if(theme !== themeLightness) whatsappWebviewDual.runJavaScript("document.userScripts.setTheme('"+themeLightness+"');");
-							});
-						}
-					}
-				}
-
-				onJavaScriptConsoleMessage : if (Qt.application.arguments[0] == "plasmoidviewer") {
-					console.log("Whatsapp Dual: " + message);
-				}
-
-				function isDark(color) {
-					var luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
-					return (luminance < 0.5);
-				}
+				msgDebug: "Whatsapp dual: "
 			}
 		}
-		WebEngineView {
-			id:whatsappWebViewInspector
-			enabled: false
-			visible: false
-			z: 100
-			height:parent.height /2
-			Layout.fillWidth: true
-			Layout.alignment: Qt.AlignBottom
-			inspectedView: enabled ? whatsappWebview : null
-		}
-		WebEngineView {
+
+		WhatsappEngineViewInspector {
+			id: whatsappWebViewInspector
+			height: parent.height / 2
+            inspectedView: enabled ? whatsappWebview : null	
+        }
+
+		WhatsappEngineViewInspector {
 			id: whatsappWebViewDualInspector
-			enabled: false
-			visible: false
-			z: 100
-			height:parent.height /2
-			Layout.fillWidth: true
-			Layout.alignment: Qt.AlignBottom
-			inspectedView: enabled ? whatsappWebviewDual : null
-		}
+			height: parent.height / 2
+            inspectedView: enabled ? whatsappWebviewDual : null	
+        }
 	}
 
 }
