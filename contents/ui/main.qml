@@ -20,7 +20,7 @@ Item {
 	property int reloadRetries: 0;
 	property string osTheme: '';
 
-	//Notifications
+	//Component Notifications
 	Component {
 		id: notificationComponent
 		Notification {
@@ -47,34 +47,26 @@ Item {
 		}
 	}
 
-	Plasmoid.compactRepresentation: Item {
-		anchors.fill: parent
-		PlasmaCore.SvgItem {
-			anchors.centerIn: parent
-			width: parent.width < parent.height ? parent.width : parent.height
-			height: width
-
-			svg: PlasmaCore.Svg {
-				imagePath: root.newMessage ? Qt.resolvedUrl("assets/logo-badge.svg") : Qt.resolvedUrl("assets/logo.svg");
-			}
-
-			MouseArea {
-				anchors.fill: parent
-				onClicked: {
-					plasmoid.expanded = !plasmoid.expanded
-					if (root.newMessage) {
-						root.newMessage = false;
-					}
-				}
-			}
+	//Component WhatsappDual
+	Component {
+		id: whatsappWebviewDualComponent
+		WhatsappEngineView {
+			id: whatsappWebviewDual
+			profile.storageName: "whatsappDual"
+			enabled: plasmoid.configuration.dualWhatsapp
+			visible: plasmoid.configuration.dualWhatsapp
+			msgDebug: "Whatsapp dual: "
 		}
 	}
+
+	Plasmoid.compactRepresentation: CompactRepresentation {}
 	
 	Plasmoid.fullRepresentation: ColumnLayout {
+		anchors.fill: parent
 		Layout.minimumWidth: 256 * PlasmaCore.Units.devicePixelRatio
 		Layout.minimumHeight:  512 * PlasmaCore.Units.devicePixelRatio
 		Layout.preferredWidth: 1600 * PlasmaCore.Units.devicePixelRatio
-		Layout.preferredHeight: 930 * PlasmaCore.Units.devicePixelRatio
+		Layout.preferredHeight: 530 * PlasmaCore.Units.devicePixelRatio
 
 		//-----------------------------  Helpers ------------------
 		Connections {
@@ -89,21 +81,19 @@ Item {
 			// 	console.log("Plasmoid hideOnWindowDeactivateChanged changed")
 			// }
 			function onExpandedChanged() {
-				if(whatsappWebview && whatsappWebviewDual && plasmoid.expanded) {
+				if(whatsappWebview && plasmoid.expanded) {
 					if(whatsappWebview.LoadStatus == WebEngineView.LoadFailedStatus) whatsappWebview.reload();
-					if(plasmoid.configuration.dualWhatsapp && whatsappWebviewDual.LoadStatus == WebEngineView.LoadFailedStatus) whatsappWebviewDual.reload()
+					if(plasmoid.configuration.dualWhatsapp){
+						let whatsappDual = whatsappWebviewLoader.item;
+						if(whatsappDual.LoadStatus == WebEngineView.LoadFailedStatus) whatsappDual.reload()
+					}
 				}
-				// if(!plasmoid.expanded && root.themeMismatch && plasmoid.configuration.matchTheme ) {
-				// 	console.log("Entre 2")
-				// 	root.themeMismatch = false;
-				// 	whatsappWebview.reloadAndBypassCache();
-				// }
+				
 				console.log("Plasmoid onExpandedChanged: "+plasmoid.expanded )
 			}
 		}
 
 		//------------------------------------- UI -----------------------------------------
-		anchors.fill: parent
 		Column {
 			anchors {
 				right: parent.right;
@@ -153,7 +143,10 @@ Item {
 					iconSource: "view-refresh"
 					onClicked: {
 						whatsappWebview.reload();
-						if(plasmoid.configuration.dualWhatsapp) whatsappWebviewDual.reload();
+						if(plasmoid.configuration.dualWhatsapp) {
+							let whatsappDual = whatsappWebviewLoader.item;
+							whatsappDual.reload();
+						}
 					}
 				}
 				PlasmaComponents.ToolButton {
@@ -176,6 +169,7 @@ Item {
 					enabled: visible
 					iconSource: "debug-step-out"
 					onClicked: {
+						let whatsappDual = whatsappWebviewLoader.item;
 						whatsappWebViewDualInspector.visible = !whatsappWebViewDualInspector.visible;
 						whatsappWebViewDualInspector.enabled = visible || whatsappWebViewDualInspector.visible
 					}
@@ -198,29 +192,31 @@ Item {
 				profile.storageName: "whatsapp"
 				msgDebug: "Whatsapp: "
 			}
-
-			WhatsappEngineView {
-				id: whatsappWebviewDual
-				profile.storageName: "whatsappDual"
+	
+			Item {
+				Layout.fillHeight: true
+				Layout.fillWidth: true
 				enabled: plasmoid.configuration.dualWhatsapp
 				visible: plasmoid.configuration.dualWhatsapp
-				msgDebug: "Whatsapp dual: "
+				Loader {
+					id: whatsappWebviewLoader
+					anchors.fill: parent
+					sourceComponent: plasmoid.configuration.dualWhatsapp ? whatsappWebviewDualComponent : null
+				}
 			}
 		}
 
 		WhatsappEngineViewInspector {
 			id: whatsappWebViewInspector
 			height: parent.height / 2
-            inspectedView: enabled ? whatsappWebview : null	
-        }
+			inspectedView: enabled ? whatsappWebview : null	
+		}
 
 		WhatsappEngineViewInspector {
 			id: whatsappWebViewDualInspector
 			height: parent.height / 2
-            inspectedView: enabled ? whatsappWebviewDual : null	
-        }
+			inspectedView: enabled ? whatsappWebviewLoader.item : null	
+		}
 	}
 
 }
-
-
