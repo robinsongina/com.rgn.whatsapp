@@ -63,10 +63,10 @@ Item {
 	
 	Plasmoid.fullRepresentation: ColumnLayout {
 		anchors.fill: parent
-		Layout.minimumWidth: 256 * PlasmaCore.Units.devicePixelRatio
-		Layout.minimumHeight:  512 * PlasmaCore.Units.devicePixelRatio
-		Layout.preferredWidth: 1600 * PlasmaCore.Units.devicePixelRatio
-		Layout.preferredHeight: 530 * PlasmaCore.Units.devicePixelRatio
+		Layout.minimumWidth: 790 * PlasmaCore.Units.devicePixelRatio
+		Layout.minimumHeight:  555 * PlasmaCore.Units.devicePixelRatio
+		Layout.preferredWidth: plasmoid.configuration.width * PlasmaCore.Units.devicePixelRatio
+		Layout.preferredHeight: plasmoid.configuration.height * PlasmaCore.Units.devicePixelRatio
 
 		//-----------------------------  Helpers ------------------
 		Connections {
