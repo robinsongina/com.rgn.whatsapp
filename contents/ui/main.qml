@@ -26,7 +26,7 @@ Item {
 		Notification {
 			componentName: "plasma_workspace"
 			eventId: "notification"
-			iconName: Qt.resolvedUrl("./assets/logo.png");
+			iconName: Qt.resolvedUrl("./assets/logo.svg");
 			autoDelete: true
 			defaultAction: "Default Action"
 			onDefaultActivated: {
@@ -88,8 +88,7 @@ Item {
 						if(whatsappDual.LoadStatus == WebEngineView.LoadFailedStatus) whatsappDual.reload()
 					}
 				}
-				
-				console.log("Plasmoid onExpandedChanged: "+plasmoid.expanded )
+				// console.log("Plasmoid onExpandedChanged: "+plasmoid.expanded )
 			}
 		}
 
