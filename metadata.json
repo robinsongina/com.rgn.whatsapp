@@ -7,7 +7,7 @@
         ],
         "Category": "Online Services",
         "Description": "Whatsapp plasmoid for Plasma.",
-        "Icon": "search-symbolic",
+        "Icon": "whatsapp-desktop",
         "Id": "com.rgn.whatsapp",
         "License": "BSD 3.0",
         "Name": "Whatsapp Plasmoid",

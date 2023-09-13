@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Name=Whatsapp plasmoid for Plasma
 Keywords=Whatsapp
-Icon=search-symbolic
+Icon=whatsapp-desktop
 X-Plasma-API=declarativeappletscript
 Type=Service
 X-Plasma-Provides=com.rgn.whatsapp
