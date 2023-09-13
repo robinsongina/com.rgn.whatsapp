@@ -1,6 +1,6 @@
 # WhatsApp Web plamosid
 
-## Installtion
+## Installation
 ```
 git clone git@github.com:dark-eye/com.darkeye.chatGPT.git
 plasmapkg2 --install ./com.darkeye.chatGPT/package
@@ -23,6 +23,6 @@ And remove the installed plasmoid with
 
 ## General structure and notes:
 TODO
-[] Feature file download permissions
-[] Feature microphone permission
-[] Config height, width of plasmoid
+[x] Feature file download permissions
+[x] Feature microphone permission
+[x] Config height, width of plasmoid
