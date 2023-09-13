@@ -28,16 +28,23 @@ WebEngineView {
 		//This signal is emitted whenever there is a newly created user notification. The notification argument holds the WebEngineNotification instance to query data and interact with.
 		onPresentNotification: {
 			if (!plasmoid.expanded) root.newMessage = true;
-			let notify = notificationComponent.createObject(parent);
-			notify.title = notification.title;
-			notify.text = notification.message
-			notify.sendEvent();
+			sendNotification(notification.title, notification.message);
+		}
+		onDownloadRequested: {
+			download.accept();
+		}
+		onDownloadFinished: {
+			if(download.state === WebEngineDownloadItem.DownloadCompleted){
+				sendNotification("Download Complete", download.downloadFileName)
+			}else if (download.state === WebEngineDownloadItem.DownloadInterrupted){
+				sendNotification("Download interrupted", download.interruptReasonString)	
+			}
 		}
 	}
 
-				//This signal is emitted when the web site identified by securityOrigin requests to make use of the resource or device identified by feature.
+	//This signal is emitted when the web site identified by securityOrigin requests to make use of the resource or device identified by feature.
 	onFeaturePermissionRequested: {
-		if (feature === WebEngineView.Notifications) {
+		if (feature === WebEngineView.Notifications || feature === WebEngineView.MediaAudioCapture) {
 			whatsappWebview.grantFeaturePermission(securityOrigin, feature, true)
 		}
 	}
@@ -47,10 +54,10 @@ WebEngineView {
 		Qt.openUrlExternally(request.requestedUrl)
 	}
 
-				//This signal is emitted when a page load begins, ends, or fails.
+	//This signal is emitted when a page load begins, ends, or fails.
 	onLoadingChanged:  {
 		if(WebEngineView.LoadSucceededStatus === loadRequest.status) {
-			whatsappWebview.grantFeaturePermission("https://web.whatsapp.com", WebEngineView.Notifications, true)
+			whatsappWebview.grantFeaturePermission(url, WebEngineView.Notifications, true)
 			whatsappWebview.runJavaScript("document.userScripts.setConfig("+JSON.stringify(plasmoid.configuration)+");");
 			if (plasmoid.configuration.matchTheme) {						
 				root.osTheme = (isDark(theme.backgroundColor) ? 'dark' : 'light');
@@ -65,6 +72,11 @@ WebEngineView {
     onJavaScriptConsoleMessage : if (Qt.application.arguments[0] == "plasmoidviewer") {
     	console.log(msgDebug + message);
     }
+
+	function sendNotification(title, message) {
+		let notify = notificationComponent.createObject(parent, {title: title, text: message});
+		notify.sendEvent();
+	}
 
 	function isDark(color) {
 		let luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
