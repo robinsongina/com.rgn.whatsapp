@@ -22,6 +22,12 @@ WebEngineView {
 				name: "helperFunctions"
 				worldId: WebEngineScript.MainWorld
 				sourceUrl: "./js/helper_functions.js"
+			},
+			WebEngineScript {
+				injectionPoint: WebEngineScript.DocumentReady
+				name: "resolveWhatsapp"
+				worldId: WebEngineScript.MainWorld
+				sourceUrl: "./js/resolveWhatsapp.js"
 			}
 		]
 
@@ -57,6 +63,7 @@ WebEngineView {
 	//This signal is emitted when a page load begins, ends, or fails.
 	onLoadingChanged:  {
 		if(WebEngineView.LoadSucceededStatus === loadRequest.status) {
+			//Permanently allow notifications
 			whatsappWebview.grantFeaturePermission(url, WebEngineView.Notifications, true)
 			whatsappWebview.runJavaScript("document.userScripts.setConfig("+JSON.stringify(plasmoid.configuration)+");");
 			if (plasmoid.configuration.matchTheme) {						
