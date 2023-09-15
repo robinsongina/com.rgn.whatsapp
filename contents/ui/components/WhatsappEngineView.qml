@@ -1,14 +1,18 @@
 import QtQuick 2.3
-import QtWebEngine 1.9
 import QtQuick.Layouts 1.0
+import QtWebEngine 1.9
 
 WebEngineView {
-    property string msgDebug: ""
+	property string msgDebug: ""
 	id: whatsappWebview
 	url: "https://web.whatsapp.com"
 	settings.javascriptCanAccessClipboard: plasmoid.configuration.allowClipboardAccess
 	Layout.fillHeight: true
 	Layout.fillWidth: true
+
+	NotificationMsg{
+        id: notificationComponent
+    }
 
 	profile: WebEngineProfile {
 		id: whatsappProfile
@@ -21,13 +25,13 @@ WebEngineView {
 				injectionPoint: WebEngineScript.DocumentCreation
 				name: "helperFunctions"
 				worldId: WebEngineScript.MainWorld
-				sourceUrl: "./js/helper_functions.js"
+				sourceUrl: "../js/helper_functions.js"
 			},
 			WebEngineScript {
 				injectionPoint: WebEngineScript.DocumentReady
 				name: "resolveWhatsapp"
 				worldId: WebEngineScript.MainWorld
-				sourceUrl: "./js/resolveWhatsapp.js"
+				sourceUrl: "../js/resolveWhatsapp.js"
 			}
 		]
 

@@ -5,11 +5,11 @@ ConfigModel {
     ConfigCategory {
         name: i18n("General")
         icon: "configure"
-        source: "configGeneral.qml"
+        source: "config/configGeneral.qml"
     }
     ConfigCategory {
         name: i18n("Advanced")
         icon: "tools"
-        source: "configAdvanced.qml"
+        source: "config/configAdvanced.qml"
     }
 }
