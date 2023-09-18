@@ -12,11 +12,11 @@ Component {
 		iconName: Qt.resolvedUrl("../assets/logo.svg");
 		autoDelete: true
 		onAction1Activated: {
-			let file = `file:///${directory}/${text}`
+			let file = `file://${directory}/${text}`
 			Qt.openUrlExternally(file)
 		}
 		onAction2Activated: {
-			let file = `file:///${directory}/`
+			let file = `file://${directory}/`
 			Qt.openUrlExternally(file)
 		}
 	}
