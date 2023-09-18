@@ -26,3 +26,5 @@ TODO
 [x] Feature file download permissions
 [x] Feature microphone permission
 [x] Config height, width of plasmoid
+[x] Reply message
+[x] Open download files
