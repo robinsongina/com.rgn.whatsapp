@@ -10,9 +10,13 @@ WebEngineView {
 	Layout.fillHeight: true
 	Layout.fillWidth: true
 
-	NotificationMsg{
-        id: notificationComponent
+	NotificationMsg {
+        id: notificationMsg
     }
+
+	NotificationDownload {
+		id: notificationDownload
+	}
 
 	profile: WebEngineProfile {
 		id: whatsappProfile
@@ -31,23 +35,35 @@ WebEngineView {
 				injectionPoint: WebEngineScript.DocumentReady
 				name: "resolveWhatsapp"
 				worldId: WebEngineScript.MainWorld
-				sourceUrl: "../js/resolveWhatsapp.js"
+				sourceUrl: "../js/whatsapp.js"
 			}
 		]
 
 		//This signal is emitted whenever there is a newly created user notification. The notification argument holds the WebEngineNotification instance to query data and interact with.
 		onPresentNotification: {
 			if (!plasmoid.expanded) root.newMessage = true;
-			sendNotification(notification.title, notification.message);
+			sendNotification('msg', {
+				title: notification.title, 
+				text: notification.message, 
+				chatId: notification.tag
+			});
 		}
 		onDownloadRequested: {
 			download.accept();
 		}
 		onDownloadFinished: {
 			if(download.state === WebEngineDownloadItem.DownloadCompleted){
-				sendNotification("Download Complete", download.downloadFileName)
+				sendNotification('download', { 
+					title: "Download Complete", 
+					text: download.downloadFileName,
+					directory: download.downloadDirectory,
+					actions: ['Open', 'Folder']
+				})
 			}else if (download.state === WebEngineDownloadItem.DownloadInterrupted){
-				sendNotification("Download interrupted", download.interruptReasonString)	
+				sendNotification('download', {
+					title: "Download interrupted", 
+					text: download.interruptReasonString
+				})	
 			}
 		}
 	}
@@ -84,8 +100,13 @@ WebEngineView {
     	console.log(msgDebug + message);
     }
 
-	function sendNotification(title, message) {
-		let notify = notificationComponent.createObject(parent, {title: title, text: message});
+	function sendNotification(typeNotification, options ) {
+		let notify;
+		if(typeNotification === 'msg'){
+			notify = notificationMsg.createObject(parent, options);
+		}else{
+			notify = notificationDownload.createObject(parent, options);
+		}
 		notify.sendEvent();
 	}
 
