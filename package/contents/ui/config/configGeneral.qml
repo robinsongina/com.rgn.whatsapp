@@ -28,7 +28,7 @@ Kirigami.FormLayout {
   QQC2.Slider {
     Kirigami.FormData.label:i18n("Window Height: %1px",height.value );
     id: height
-    from: 555
+    from: 560
     stepSize: 10
     value: 555
     to: 1080
