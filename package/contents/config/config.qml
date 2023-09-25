@@ -8,6 +8,11 @@ ConfigModel {
         source: "config/configGeneral.qml"
     }
     ConfigCategory {
+        name: i18n("Appearance")
+        icon: "preferences-desktop-display-color"
+        source: "config/configAppearance.qml"
+    }
+    ConfigCategory {
         name: i18n("Advanced")
         icon: "tools"
         source: "config/configAdvanced.qml"

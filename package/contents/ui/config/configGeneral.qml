@@ -10,30 +10,8 @@ Kirigami.FormLayout {
   property alias cfg_allowClipboardAccess: allowClipboardAccess.checked
   property alias cfg_userAgent: userAgent.text
   property alias cfg_dualWhatsapp: dualWhatsapp.checked
-  property alias cfg_width: width.value
-  property alias cfg_height: height.value
 	
   Layout.fillHeight:true
-
-  QQC2.Slider {
-    Kirigami.FormData.label:i18n("Window Width: %1px",width.value );
-    id: width
-    from: 790
-    stepSize: 10
-    value: 790
-    to: 1920
-    live: true
-  }
-
-  QQC2.Slider {
-    Kirigami.FormData.label:i18n("Window Height: %1px",height.value );
-    id: height
-    from: 560
-    stepSize: 10
-    value: 555
-    to: 1080
-    live: true
-  }
 
   QQC2.TextField {
 	  id: userAgent
